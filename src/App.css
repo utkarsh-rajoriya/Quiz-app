@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import "tailwindcss";
+@layer utilities {
+  .msg {
+    font-family: "Shantell Sans", cursive;
+    @apply border-1 border-white bg-[#10172a] text-white rounded-t-2xl rounded-l-2xl text-sm;
+  }
+
+  .Quizlogo{
+    filter: drop-shadow( 0rem  0rem  1rem #fff);
+    @apply h-15 md:h-20
+  }
+  
+  .font-Shantell{
+    font-family: "Shantell Sans";
+  }
+}
