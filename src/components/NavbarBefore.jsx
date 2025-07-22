@@ -1,4 +1,4 @@
-import QuizLogo from "../assets/Quiz_logo.png";
+import QuizLogo from "../assets/Quiz_Logo.png";
 import StarBorder from "../stylings/StarBorder";
 
 const NavbarBefore = ({ ClickLogin, ClickSignup }) => {

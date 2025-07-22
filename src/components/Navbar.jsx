@@ -1,5 +1,5 @@
 import React from "react";
-import QuizLogo from "../assets/Quiz_logo.png";
+import QuizLogo from "../assets/Quiz_Logo.png";
 import StarBorder from "../stylings/StarBorder";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
