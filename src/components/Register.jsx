@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Register = (props) => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const localUrl = "http://localhost:8080";
   const [showForget, setShowForget] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,7 +54,7 @@ const Register = (props) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${baseUrl}/api/signup` , {
+      const response = await fetch(`${localUrl}/api/signup` , {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,6 +63,13 @@ const Register = (props) => {
       });
 
       const data = await response.json();
+      console.log(data);
+      if(data.email == "notFound"){
+        alert("Signup failed. Email not found");
+        setUserInfo({ name: "", email: "", password: "" });
+        setConfirmPassword("");
+        return;
+      }
       if (!response.ok || !data.id) {
         alert("Signup failed. User already exist with this email.");
         setUserInfo({ name: "", email: "", password: "" });

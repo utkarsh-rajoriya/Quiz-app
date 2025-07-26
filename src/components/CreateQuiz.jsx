@@ -1,11 +1,12 @@
-import { useState, useMemo, useEffect } from "react";
-import { Link } from "react-router-dom"; // Import Link for navigation
-import { FaSearch, FaPlus, FaTrash, FaTachometerAlt } from "react-icons/fa"; // Added FaTachometerAlt
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { FaSearch, FaPlus, FaTrash, FaTachometerAlt } from "react-icons/fa";
 import { AnimatePresence, motion } from "framer-motion";
-import RoboMsg from "../components/RoboMsg"; // adjust this path if needed
+import RoboMsg from "../components/RoboMsg";
 
 const CreateQuiz = () => {
   const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const localUrl = "http://localhost:8080";
   const [title, setTitle] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -14,18 +15,35 @@ const CreateQuiz = () => {
   const [successMsg, setSuccessMsg] = useState("");
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const response = await fetch(`${baseUrl}/api/question/getAll`);
-        if (!response.ok) throw new Error("Failed to fetch questions");
-        const data = await response.json();
-        setQuestions(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchQuestions();
-  }, []);
+  const controller = new AbortController();
+
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true);
+      const endpoint = searchTerm.trim()
+        ? `${localUrl}/api/question/search/${encodeURIComponent(searchTerm)}`
+        : `${localUrl}/api/question/getAll`;
+
+      const response = await fetch(endpoint, { signal: controller.signal });
+
+      if (!response.ok) throw new Error("Failed to fetch questions.");
+      const data = await response.json();
+      setQuestions(data);
+    } catch (err) {
+      if (err.name !== "AbortError") console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const delayDebounce = setTimeout(fetchQuestions, 400);
+
+  return () => {
+    clearTimeout(delayDebounce);
+    controller.abort();
+  };
+}, [searchTerm]);
+
 
   useEffect(() => {
     if (successMsg) {
@@ -81,12 +99,6 @@ const CreateQuiz = () => {
     }
   };
 
-  const filteredQuestions = useMemo(() => {
-    return questions.filter((q) =>
-      (q.qtn || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [searchTerm, questions]);
-
   return (
     <div className="relative bg-[#0f172a] min-h-screen font-poppins text-white p-4 sm:p-6 md:p-8 overflow-hidden">
       {/* Aurora Background */}
@@ -97,7 +109,7 @@ const CreateQuiz = () => {
           style={{ animationDelay: "4s" }}
         ></div>
       </div>
-      
+
       {/* Dashboard Navigation Button */}
       <motion.div
         initial={{ opacity: 0, x: -100 }}
@@ -219,8 +231,8 @@ const CreateQuiz = () => {
               />
             </div>
             <div className="space-y-3 max-h-[34rem] lg:max-h-[28rem] overflow-y-auto pr-2">
-              {filteredQuestions.length > 0 ? (
-                filteredQuestions.map((q) => (
+              {questions.length > 0 ? (
+                questions.map((q) => (
                   <div
                     key={q.id}
                     className="flex items-center justify-between bg-[#0f172a]/70 p-3 rounded-lg hover:bg-[#0f172a] transition-colors"
