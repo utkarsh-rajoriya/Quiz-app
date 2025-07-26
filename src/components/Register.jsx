@@ -54,7 +54,7 @@ const Register = (props) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${localUrl}/api/signup` , {
+      const response = await fetch(`${baseUrl}/api/signup` , {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

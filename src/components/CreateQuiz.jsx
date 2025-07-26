@@ -21,8 +21,8 @@ const CreateQuiz = () => {
     try {
       setLoading(true);
       const endpoint = searchTerm.trim()
-        ? `${localUrl}/api/question/search/${encodeURIComponent(searchTerm)}`
-        : `${localUrl}/api/question/getAll`;
+        ? `${baseUrl}/api/question/search/${encodeURIComponent(searchTerm)}`
+        : `${baseUrl}/api/question/getAll`;
 
       const response = await fetch(endpoint, { signal: controller.signal });
 
